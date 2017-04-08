@@ -50,6 +50,19 @@ handleTakeAndGive state newName value =
   in case alreadyExists allPeople newName of
     Just test -> state { people = updatePersonItems allPeople newName value }
     Nothing -> state { people = people state ++ [Person newName value []] }
+isPersonIn :: State -> String -> String -> String
+isPersonIn state name location =
+  let allPeople = people state
+  in case alreadyExists allPeople name of
+    Just value -> checkLocation (last (locations value)) location
+    Nothing -> "Maybe"
+
+checkLocation :: Location -> String -> String
+checkLocation lastLocation location
+  | locationName lastLocation == location = "Yes"
+  | otherwise = "No"
+
+
 loop state = do
   line <- getLine
   unless (null line) $
@@ -70,5 +83,9 @@ loop state = do
           let newState = handleTakeAndGive state personName value
           mapM_ print (people newState)
           loop newState
+        IsIn (EPerson (Ident personName)) (ELocation (Ident locationName)) -> do
+          putStrLn $ isPersonIn state personName locationName
+          loop state
+
 
 main = loop (State [])
