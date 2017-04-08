@@ -1,0 +1,44 @@
+-- file Text.bnfc
+
+IsIn. Command ::= "Is" EPerson ELocation "?" ;
+WhereIs. Command ::= "Where is" EItem "?" ;
+HowMany. Command ::= "How many objects is" EPerson "carrying ?";
+WhereWasBefore. Command ::= "Where was" EPerson "before" ELocation "?" ;
+WhereWasAfter. Command ::= "Where was" EPerson "after" ELocation "?" ;
+HowDo. Command ::= "How do you go " ELocation ELocation "?";
+
+Either. Command ::= EPerson  "is either" ELocation ELocation ;
+NoMore. Command ::= EPerson "is no longer" ELocation ;
+
+Move. Command ::= EPerson "is" ELocation ;
+Move. Command ::= EPerson "moved" ELocation ;
+Move. Command ::= EPerson "journeyed" ELocation ;
+Move. Command ::= EPerson "went" ELocation ;
+Move. Command ::= EPerson "travelled" ELocation ;
+
+Take. Command ::= EPerson "took" EItem ;
+Take. Command ::= EPerson "picked up" EItem ;
+Take. Command ::= EPerson "got" EItem ;
+
+Handed. Command ::= EPerson "handed" EItem "to" EPerson ;
+
+Give. Command ::= EPerson "dropped" EItem ;
+Give. Command ::= EPerson "discarded" EItem ;
+Give. Command ::= EPerson "handed" EItem ;
+
+IsOf. Command ::= ELocation EDirection ELocation ;
+
+ELocation. ELocation ::= "to the" Ident ;
+ELocation. ELocation ::= "in the" Ident ;
+ELocation. ELocation ::= "or the" Ident ;
+ELocation. ELocation ::= "from the" Ident ;
+ELocation. ELocation ::= "the" Ident ;
+ELocation. ELocation ::= "The" Ident "is" ;
+
+EWest. EDirection ::= "west of" ;
+EEast. EDirection ::= "east of" ;
+ENorth. EDirection ::= "north of" ;
+ESouth. EDirection ::= "south of" ;
+
+EItem. EItem ::= "the" Ident ;
+EPerson. EPerson ::= Ident ;
