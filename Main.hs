@@ -15,7 +15,7 @@ data State = State {
 } deriving (Show)
 
 data Person = Person {
-  name :: String,
+  personName :: String,
   objects :: Int,
   locations :: [Location]
 } deriving (Show, Eq)
@@ -30,21 +30,23 @@ data Item = Item {
   location :: Location
 } deriving (Show, Eq)
 
+
+-- TODO: Generilize these two functions into one
+findPerson :: [Person] -> String -> Maybe Person
+findPerson people name = find (\person -> (personName person) == name) people
+
+findItem :: [Item] -> String -> Maybe Item
+findItem items name = find (\item -> (itemName item) == name) items
+
 updatePersonLocation :: [Person] -> String -> String -> [Person]
 updatePersonLocation (person:people) newName newLocation
-  | (name person) == newName = person { locations = (locations person) ++ [Location newLocation]} : people
+  | (personName person) == newName = person { locations = (locations person) ++ [Location newLocation]} : people
   | otherwise = [person] ++ updatePersonLocation people newName newLocation
 
 updatePersonItems :: [Person] -> String -> Int -> [Person]
 updatePersonItems (person:people) newName value
- | (name person) == newName = person { objects = (objects person) + value} : people
+ | (personName person) == newName = person { objects = (objects person) + value} : people
  | otherwise = [person] ++ updatePersonItems people newName value
-
-findPerson :: [Person] -> String -> Maybe Person
-findPerson people newName = find (\person -> (name person) == newName) people
-
-findItem :: [Item] -> String -> Maybe Item
-findItem items newItem = find (\item -> (itemName item) == newItem) items
 
 getLocation :: [Person] -> String -> Location
 getLocation people owner =
@@ -96,9 +98,8 @@ checkLocation lastLocation location
 getItemLocation :: [Item] -> String -> Location
 getItemLocation items itemName =
   case findItem items itemName of
-    Just value -> location value
+    Just item -> location item
     Nothing -> error "location not found"
-
 
 loop state = do
   line <- getLine
@@ -127,7 +128,7 @@ loop state = do
           loop state
         WhereIs (EItem (Ident itemName)) -> do
           let answer = getItemLocation (items state) itemName
-          putStrLn ("Location was " ++ locationName answer)
+          putStrLn (locationName answer)
           loop state
 
 main = loop (State [] [])
