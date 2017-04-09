@@ -52,11 +52,17 @@ getLocation people owner =
     Just value -> last (locations value)
     Nothing -> error "location not found"
 
+moveItems :: [Item] -> String -> String -> [Item]
+moveItems (item:items) person newLocation = if (owner item) == person then [item {location = Location newLocation}] ++ moveItems items person newLocation
+                                            else [item] ++ moveItems items person newLocation
+moveItems [] _ _ = []
+
 handleMove :: State -> String -> String -> State
 handleMove state newName newLocation =
   let allPeople = people state
+      updatedItems = moveItems (items state) newName newLocation
   in case findPerson allPeople newName of
-    Just value -> state { people = updatePersonLocation allPeople newName newLocation }
+    Just value -> state { people = updatePersonLocation allPeople newName newLocation, items = updatedItems }
     Nothing -> state { people = people state ++ [Person newName 0 [Location newLocation]] }
 
 updateItemState :: State -> String -> Int -> String -> [Item]
@@ -87,6 +93,12 @@ checkLocation lastLocation location
   | locationName lastLocation == location = "Yes"
   | otherwise = "No"
 
+getItemLocation :: [Item] -> String -> Location
+getItemLocation items itemName =
+  case findItem items itemName of
+    Just value -> location value
+    Nothing -> error "location not found"
+
 
 loop state = do
   line <- getLine
@@ -113,6 +125,9 @@ loop state = do
         IsIn (EPerson (Ident personName)) (ELocation (Ident locationName)) -> do
           putStrLn $ isPersonIn state personName locationName
           loop state
-
+        WhereIs (EItem (Ident itemName)) -> do
+          let answer = getItemLocation (items state) itemName
+          putStrLn ("Location was " ++ locationName answer)
+          loop state
 
 main = loop (State [] [])
