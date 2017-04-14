@@ -9,3 +9,9 @@ Main.hi
 Main.o
 ParText.hi
 ParText.o
+Item.hi
+Item.o
+Location.hi
+Location.o
+Person.hi
+Person.o
