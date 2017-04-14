@@ -26,21 +26,24 @@ handleMove state newName newLocation =
     Just value -> state { people = updatePersonLocation allPeople newName newLocation, items = updatedItems }
     Nothing -> state { people = people state ++ [Person newName 0 [Location newLocation]] }
 
-updateItemState :: State -> String -> Int -> String -> [Item]
-updateItemState state owner value item =
+updateItemState :: State -> String -> Bool -> String -> [Item]
+updateItemState state owner takeItem item =
   let currentLocation = getLocation (people state) owner
   in case findItem (items state) item of
-    Just value -> (items state)
+    Just value -> if (takeItem)
+                  then (items state)
+                  else dropItem (items state) item
     Nothing -> (items state) ++ [Item item owner currentLocation]
 
-handleTakeAndGive :: State -> String -> Int -> String -> State
-handleTakeAndGive state newName value item =
+handleTakeAndGive :: State -> String -> Bool -> String -> State
+handleTakeAndGive state newName takeItem item =
   let allPeople = people state
       allItems = items state
-      updatedItems = updateItemState state newName value item
+      value = 1
+      updatedItems = updateItemState state newName takeItem item
   in case findPerson allPeople newName of
-    Just test -> state { people = updatePersonItems allPeople newName value, items = updatedItems }
-    Nothing -> state { people = people state ++ [Person newName value []], items = updatedItems }
+    Just test -> state { people = updatePersonItems allPeople newName takeItem, items = updatedItems }
+    Nothing -> state { people = people state ++ [Person newName 1 []], items = updatedItems }
 
 isPersonIn :: State -> String -> String -> String
 isPersonIn state name location =
@@ -54,16 +57,11 @@ updateState :: Command -> State -> State
 updateState command state =
   case command of
     Move (EPerson (Ident personName)) (ELocation (Ident locationName)) -> do
-      let updatedState = handleMove state personName locationName
-      updatedState
+      handleMove state personName locationName
     Take (EPerson (Ident personName)) (EItem (Ident itemName)) -> do
-      let value = 1
-      let updatedState = handleTakeAndGive state personName value itemName
-      updatedState
+      handleTakeAndGive state personName True itemName
     Give (EPerson (Ident personName)) (EItem (Ident itemName)) -> do
-      let value = -1
-      let updatedState = handleTakeAndGive state personName value itemName
-      updatedState
+      handleTakeAndGive state personName False itemName
 
 loop state = do
   line <- getLine

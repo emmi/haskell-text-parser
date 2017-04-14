@@ -20,10 +20,12 @@ updatePersonLocation (person:people) newName newLocation
   | otherwise = [person] ++ updatePersonLocation people newName newLocation
 
 
-updatePersonItems :: [Person] -> String -> Int -> [Person]
-updatePersonItems (person:people) newName value
- | (personName person) == newName = person { objects = (objects person) + value} : people
- | otherwise = [person] ++ updatePersonItems people newName value
+updatePersonItems :: [Person] -> String -> Bool -> [Person]
+updatePersonItems (person:people) newName takeItem
+ | (personName person) == newName = if (takeItem)
+                                    then person { objects = (objects person) + 1} : people
+                                    else person { objects = (objects person) - 1} : people
+ | otherwise = [person] ++ updatePersonItems people newName takeItem
 
 
 getLocation :: [Person] -> String -> Location

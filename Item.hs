@@ -24,3 +24,10 @@ getItemLocation items itemName =
   case findItem items itemName of
     Just item -> location item
     Nothing -> error "location not found"
+
+
+dropItem :: [Item] -> String -> [Item]
+dropItem (item:items) droppedItem = if (itemName item == droppedItem )
+                                    then dropItem items droppedItem
+                                    else [item] ++ dropItem items droppedItem
+dropItem [] _ = []
