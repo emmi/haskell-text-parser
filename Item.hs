@@ -19,11 +19,15 @@ moveItems (item:items) person newLocation = if (owner item) == person then [item
 moveItems [] _ _ = []
 
 
-getItemLocation :: [Item] -> String -> Location
+getItemLocation :: [Item] -> String -> String
 getItemLocation items itemName =
   case findItem items itemName of
-    Just item -> location item
-    Nothing -> error "location not found"
+    Just item ->
+      let location_ = location item
+      in if (locationName location_) == ""
+          then "Don't know."
+          else locationName location_
+    Nothing -> "Don't know."
 
 
 dropItem :: [Item] -> String -> [Item]

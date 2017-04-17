@@ -72,8 +72,7 @@ loop state = do
           putStrLn $ isPersonIn (people state) personName locationName
           loop state
         WhereIs (EItem (Ident itemName)) -> do
-          let answer = getItemLocation (items state) itemName
-          putStrLn (locationName answer)
+          putStrLn $ getItemLocation (items state) itemName
           loop state
         HowMany (EPerson (Ident personName)) -> do
           putStrLn $ getObjectCount (people state) personName
