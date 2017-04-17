@@ -45,6 +45,9 @@ handleTakeAndGive state newName takeItem item =
     Just test -> state { people = updatePersonItems allPeople newName takeItem, items = updatedItems }
     Nothing -> state { people = people state ++ [Person newName 1 []], items = updatedItems }
 
+handleOwnerChange :: State -> String -> String -> String -> State
+handleOwnerChange state prevOwner newOwner itemName =
+  handleTakeAndGive (handleTakeAndGive state prevOwner False itemName) newOwner True itemName
 
 updateState :: Command -> State -> State
 updateState command state =
@@ -55,6 +58,8 @@ updateState command state =
       handleTakeAndGive state personName True itemName
     Give (EPerson (Ident personName)) (EItem (Ident itemName)) -> do
       handleTakeAndGive state personName False itemName
+    Handed (EPerson (Ident prevOwner)) (EItem (Ident itemName)) (EPerson (Ident newOwner)) -> do
+      handleOwnerChange state prevOwner newOwner itemName
 
 loop state = do
   line <- getLine
