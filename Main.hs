@@ -18,13 +18,13 @@ data State = State {
   items :: [Item]
 } deriving (Show)
 
-handleMove :: State -> String -> String -> State
-handleMove state newName newLocation =
+handleMove :: State -> String -> String -> Bool -> State
+handleMove state newName newLocation isUncertain =
   let allPeople = people state
       updatedItems = moveItems (items state) newName newLocation
   in case findPerson allPeople newName of
-    Just value -> state { people = updatePersonLocation allPeople newName newLocation, items = updatedItems }
-    Nothing -> state { people = people state ++ [Person newName 0 [Location newLocation]] }
+    Just value -> state { people = updatePersonLocation allPeople newName newLocation isUncertain, items = updatedItems }
+    Nothing -> state { people = people state ++ [Person newName 0 [Location newLocation] isUncertain] }
 
 updateItemState :: State -> String -> Bool -> String -> [Item]
 updateItemState state owner takeItem item =
@@ -43,19 +43,25 @@ handleTakeAndGive state newName takeItem item =
       updatedItems = updateItemState state newName takeItem item
   in case findPerson allPeople newName of
     Just test -> state { people = updatePersonItems allPeople newName takeItem, items = updatedItems }
-    Nothing -> state { people = people state ++ [Person newName 1 []], items = updatedItems }
+    Nothing -> state { people = people state ++ [Person newName 1 [] False] , items = updatedItems }
 
 handleOwnerChange :: State -> String -> String -> String -> State
 handleOwnerChange state prevOwner newOwner itemName =
   handleTakeAndGive (handleTakeAndGive state prevOwner False itemName) newOwner True itemName
 
+handleUncertainMove :: State -> String -> String -> String -> State
+handleUncertainMove state personName location1 location2 =
+  handleMove (handleMove state personName location1 True) personName location2 True
+
 updateState :: Command -> State -> State
 updateState command state =
   case command of
     Move (EPerson (Ident personName)) (ELocation (Ident locationName)) -> do
-      handleMove state personName locationName
+      handleMove state personName locationName False
     NoMore (EPerson (Ident personName)) (ELocation (Ident locationName)) -> do
-      handleMove state personName ""
+      handleMove state personName "" False
+    Either (EPerson (Ident personName)) (ELocation (Ident location1)) (ELocation (Ident location2)) -> do
+      handleUncertainMove state personName location1 location2
     Take (EPerson (Ident personName)) (EItem (Ident itemName)) -> do
       handleTakeAndGive state personName True itemName
     Give (EPerson (Ident personName)) (EItem (Ident itemName)) -> do

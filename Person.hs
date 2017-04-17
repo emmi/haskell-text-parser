@@ -7,17 +7,18 @@ import Item
 data Person = Person {
   personName :: String,
   objects :: Int,
-  locations :: [Location]
+  locations :: [Location],
+  locationIsUncertain :: Bool
 } deriving (Show, Eq)
 
 findPerson :: [Person] -> String -> Maybe Person
 findPerson people name = find (\person -> (personName person) == name) people
 
 
-updatePersonLocation :: [Person] -> String -> String -> [Person]
-updatePersonLocation (person:people) newName newLocation
-  | (personName person) == newName = person { locations = (locations person) ++ [Location newLocation]} : people
-  | otherwise = [person] ++ updatePersonLocation people newName newLocation
+updatePersonLocation :: [Person] -> String -> String -> Bool -> [Person]
+updatePersonLocation (person:people) newName newLocation isUncertain
+  | (personName person) == newName = person { locations = (locations person) ++ [Location newLocation], locationIsUncertain = isUncertain } : people
+  | otherwise = [person] ++ updatePersonLocation people newName newLocation isUncertain
 
 
 updatePersonItems :: [Person] -> String -> Bool -> [Person]
@@ -39,7 +40,9 @@ getLocation people owner =
 isPersonIn :: [Person] -> String -> String -> String
 isPersonIn people name location =
   case findPerson people name of
-   Just value -> checkLocation (last (locations value)) location
+   Just person -> if locationIsUncertain person
+                 then "Maybe"
+                 else checkLocation (last (locations person)) location
    Nothing -> "Maybe"
 
 getObjectCount :: [Person] -> String -> String
