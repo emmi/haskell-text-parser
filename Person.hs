@@ -31,8 +31,11 @@ updatePersonItems (person:people) newName takeItem
 getLocation :: [Person] -> String -> Location
 getLocation people owner =
  case findPerson people owner of
-   Just value -> last (locations value)
-   Nothing -> error "location not found"
+   Just value -> if (null (locations value))
+                 then Location ""
+                 else last (locations value)
+   Nothing -> Location ""
+
 isPersonIn :: [Person] -> String -> String -> String
 isPersonIn people name location =
   case findPerson people name of
