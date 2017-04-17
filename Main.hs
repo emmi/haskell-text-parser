@@ -54,6 +54,8 @@ updateState command state =
   case command of
     Move (EPerson (Ident personName)) (ELocation (Ident locationName)) -> do
       handleMove state personName locationName
+    NoMore (EPerson (Ident personName)) (ELocation (Ident locationName)) -> do
+      handleMove state personName ""
     Take (EPerson (Ident personName)) (EItem (Ident itemName)) -> do
       handleTakeAndGive state personName True itemName
     Give (EPerson (Ident personName)) (EItem (Ident itemName)) -> do
