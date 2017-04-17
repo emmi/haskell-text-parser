@@ -33,3 +33,9 @@ getLocation people owner =
  case findPerson people owner of
    Just value -> last (locations value)
    Nothing -> error "location not found"
+isPersonIn :: [Person] -> String -> String -> String
+isPersonIn people name location =
+  case findPerson people name of
+   Just value -> checkLocation (last (locations value)) location
+   Nothing -> "Maybe"
+

@@ -45,13 +45,6 @@ handleTakeAndGive state newName takeItem item =
     Just test -> state { people = updatePersonItems allPeople newName takeItem, items = updatedItems }
     Nothing -> state { people = people state ++ [Person newName 1 []], items = updatedItems }
 
-isPersonIn :: State -> String -> String -> String
-isPersonIn state name location =
-  let allPeople = people state
-  in case findPerson allPeople name of
-    Just value -> checkLocation (last (locations value)) location
-    Nothing -> "Maybe"
-
 
 updateState :: Command -> State -> State
 updateState command state =
@@ -69,7 +62,7 @@ loop state = do
     let Ok e = pCommand (myLexer line) in
       case e of
         IsIn (EPerson (Ident personName)) (ELocation (Ident locationName)) -> do
-          putStrLn $ isPersonIn state personName locationName
+          putStrLn $ isPersonIn (people state) personName locationName
           loop state
         WhereIs (EItem (Ident itemName)) -> do
           let answer = getItemLocation (items state) itemName
