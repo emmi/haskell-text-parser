@@ -73,6 +73,9 @@ loop state = do
           let answer = getItemLocation (items state) itemName
           putStrLn (locationName answer)
           loop state
+        HowMany (EPerson (Ident personName)) -> do
+          putStrLn $ getObjectCount (people state) personName
+          loop state
         _ -> do
           let updatedState = updateState e state
           mapM_ print (people updatedState)

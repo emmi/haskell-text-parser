@@ -39,3 +39,8 @@ isPersonIn people name location =
    Just value -> checkLocation (last (locations value)) location
    Nothing -> "Maybe"
 
+getObjectCount :: [Person] -> String -> String
+getObjectCount people owner =
+  case findPerson people owner of
+    Just person -> show (objects person)
+    Nothing -> "Don't know."
