@@ -81,7 +81,10 @@ loop state = do
           putStrLn $ getItemLocation (items state) itemName
           loop state
         WhereWasBefore (EPerson (Ident personName)) (ELocation (Ident locationName)) -> do
-          putStrLn $ whereWasBefore (people state) personName locationName
+          putStrLn $ whereWas (people state) personName locationName True
+          loop state
+        WhereWasAfter (EPerson (Ident personName)) (ELocation (Ident locationName)) -> do
+          putStrLn $ whereWas (people state) personName locationName False
           loop state
         HowMany (EPerson (Ident personName)) -> do
           putStrLn $ getObjectCount (people state) personName

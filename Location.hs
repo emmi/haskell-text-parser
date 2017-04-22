@@ -18,10 +18,18 @@ isLocationPossible (firstLocation:secondLocation:others) location
   | locationName firstLocation == location || locationName secondLocation == location = "Maybe"
   | otherwise = "No"
 
-getLocationNow :: [Location] -> String -> String
-getLocationNow [] _ = "Don't know."
-getLocationNow [x] _ = "Don't know."
-getLocationNow (firstLocation:others) location
+getLocationBefore :: [Location] -> String -> String
+getLocationBefore [] _ = "Don't know."
+getLocationBefore [x] _ = "Don't know."
+getLocationBefore (firstLocation:others) location
   | locationName firstLocation == location = "Don't know."
   | locationName (head others) == location = locationName firstLocation
-  | otherwise = getLocationNow others location
+  | otherwise = getLocationBefore others location
+
+
+getLocationAfter :: [Location] -> String -> String
+getLocationAfter [] _ = "Don't know."
+getLocationAfter [x] _ = "Don't know."
+getLocationAfter (firstLocation:others) location
+  | locationName firstLocation == location = locationName (head others)
+  | otherwise = getLocationAfter others location
