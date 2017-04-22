@@ -50,3 +50,9 @@ getObjectCount people owner =
   case findPerson people owner of
     Just person -> show (objects person)
     Nothing -> "Don't know."
+
+whereWasBefore :: [Person] -> String -> String -> String
+whereWasBefore people name location = 
+  case findPerson people name of
+    Just person -> show $ getLocationNow (locations person) location
+    Nothing -> "Don't know."
