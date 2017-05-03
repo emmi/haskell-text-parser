@@ -15,7 +15,8 @@ import ErrM
 
 data State = State {
   people :: [Person],
-  items :: [Item]
+  items :: [Item],
+  directions :: [Direction]
 } deriving (Show)
 
 handleMove :: State -> String -> String -> Bool -> State
@@ -53,6 +54,11 @@ handleUncertainMove :: State -> String -> String -> String -> State
 handleUncertainMove state personName location1 location2 =
   handleMove (handleMove state personName location1 True) personName location2 True
 
+saveDirection :: State -> String -> EDirection -> String -> State
+saveDirection state from direction to =
+  let flippedDirection = flipDirection direction
+  in state { directions = directions state ++ [Direction from direction to] ++ [Direction to flippedDirection from] }
+
 updateState :: Command -> State -> State
 updateState command state =
   case command of
@@ -64,10 +70,12 @@ updateState command state =
       handleUncertainMove state personName location1 location2
     Take (EPerson (Ident personName)) (EItem (Ident itemName)) -> do
       handleTakeAndGive state personName True itemName
-    Give (EPerson (Ident personName)) (EItem (Ident itemName)) -> do
-      handleTakeAndGive state personName False itemName
     Handed (EPerson (Ident prevOwner)) (EItem (Ident itemName)) (EPerson (Ident newOwner)) -> do
       handleOwnerChange state prevOwner newOwner itemName
+    Give (EPerson (Ident personName)) (EItem (Ident itemName)) -> do
+      handleTakeAndGive state personName False itemName
+    DirectionTo (ELocation (Ident from)) direction (ELocation (Ident to)) ->
+      saveDirection state from direction to
 
 loop state = do
   line <- getLine
@@ -93,6 +101,7 @@ loop state = do
           let updatedState = updateState e state
           mapM_ print (people updatedState)
           mapM_ print (items updatedState)
+          mapM_ print (directions updatedState)
           loop updatedState
 
-main = loop (State [] [])
+main = loop (State [] [] [])
