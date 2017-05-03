@@ -26,7 +26,7 @@ Give. Command ::= EPerson "dropped" EItem ;
 Give. Command ::= EPerson "discarded" EItem ;
 Give. Command ::= EPerson "handed" EItem ;
 
-IsOf. Command ::= ELocation EDirection ELocation ;
+DirectionTo. Command ::= ELocation EDirection ELocation ;
 
 ELocation. ELocation ::= "to the" Ident ;
 ELocation. ELocation ::= "in the" Ident ;

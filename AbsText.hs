@@ -21,7 +21,7 @@ data Command
     | Take EPerson EItem
     | Handed EPerson EItem EPerson
     | Give EPerson EItem
-    | IsOf ELocation EDirection ELocation
+    | DirectionTo ELocation EDirection ELocation
   deriving (Eq, Ord, Show, Read)
 
 data ELocation = ELocation Ident

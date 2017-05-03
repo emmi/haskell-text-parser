@@ -365,7 +365,7 @@ happyReduction_26 happy_x_3
 	case happyOut11 happy_x_2 of { happy_var_2 -> 
 	case happyOut10 happy_x_3 of { happy_var_3 -> 
 	happyIn9
-		 (AbsText.IsOf happy_var_1 happy_var_2 happy_var_3
+		 (AbsText.DirectionTo happy_var_1 happy_var_2 happy_var_3
 	)}}}
 
 happyReduce_27 = happySpecReduce_3  2# happyReduction_27

@@ -97,7 +97,7 @@ instance Print Command where
     Take eperson eitem -> prPrec i 0 (concatD [prt 0 eperson, doc (showString "took"), prt 0 eitem])
     Handed eperson1 eitem eperson2 -> prPrec i 0 (concatD [prt 0 eperson1, doc (showString "handed"), prt 0 eitem, doc (showString "to"), prt 0 eperson2])
     Give eperson eitem -> prPrec i 0 (concatD [prt 0 eperson, doc (showString "dropped"), prt 0 eitem])
-    IsOf elocation1 edirection elocation2 -> prPrec i 0 (concatD [prt 0 elocation1, prt 0 edirection, prt 0 elocation2])
+    DirectionTo elocation1 edirection elocation2 -> prPrec i 0 (concatD [prt 0 elocation1, prt 0 edirection, prt 0 elocation2])
 
 instance Print ELocation where
   prt i e = case e of

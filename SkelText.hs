@@ -26,7 +26,7 @@ transCommand x = case x of
   Take eperson eitem -> failure x
   Handed eperson1 eitem eperson2 -> failure x
   Give eperson eitem -> failure x
-  IsOf elocation1 edirection elocation2 -> failure x
+  DirectionTo elocation1 edirection elocation2 -> failure x
 transELocation :: ELocation -> Result
 transELocation x = case x of
   ELocation ident -> failure x
