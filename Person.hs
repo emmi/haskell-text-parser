@@ -55,6 +55,6 @@ whereWas :: [Person] -> String -> String -> Bool -> String
 whereWas people name location wasBefore =
   case findPerson people name of
     Just person -> if wasBefore
-                  then show $ getLocationBefore (locations person) location
-                  else show $ getLocationAfter (locations person) location
+                  then getLocationBefore (locations person) location
+                  else getLocationAfter (locations person) location
     Nothing -> "Don't know."

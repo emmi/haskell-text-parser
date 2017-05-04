@@ -56,8 +56,7 @@ handleUncertainMove state personName location1 location2 =
 
 saveDirection :: State -> String -> EDirection -> String -> State
 saveDirection state from direction to =
-  let flippedDirection = flipDirection direction
-  in state { directions = directions state ++ [Direction from direction to] ++ [Direction to flippedDirection from] }
+  state { directions = directions state ++ [Direction from direction to]}
 
 updateState :: Command -> State -> State
 updateState command state =
@@ -88,20 +87,20 @@ loop state = do
         WhereIs (EItem (Ident itemName)) -> do
           putStrLn $ getItemLocation (items state) itemName
           loop state
+        HowMany (EPerson (Ident personName)) -> do
+          putStrLn $ getObjectCount (people state) personName
+          loop state
         WhereWasBefore (EPerson (Ident personName)) (ELocation (Ident locationName)) -> do
           putStrLn $ whereWas (people state) personName locationName True
           loop state
         WhereWasAfter (EPerson (Ident personName)) (ELocation (Ident locationName)) -> do
           putStrLn $ whereWas (people state) personName locationName False
           loop state
-        HowMany (EPerson (Ident personName)) -> do
-          putStrLn $ getObjectCount (people state) personName
+        HowDo (ELocation (Ident from)) (ELocation (Ident to)) -> do
+          putStrLn $ getDirections (directions state) from to
           loop state
         _ -> do
           let updatedState = updateState e state
-          mapM_ print (people updatedState)
-          mapM_ print (items updatedState)
-          mapM_ print (directions updatedState)
           loop updatedState
 
 main = loop (State [] [] [])
