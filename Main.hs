@@ -64,7 +64,7 @@ updateState command state =
     Move (EPerson (Ident personName)) (ELocation (Ident locationName)) -> do
       handleMove state personName locationName False
     NoMore (EPerson (Ident personName)) (ELocation (Ident locationName)) -> do
-      handleMove state personName "" False
+      handleMove state personName "" True
     Either (EPerson (Ident personName)) (ELocation (Ident location1)) (ELocation (Ident location2)) -> do
       handleUncertainMove state personName location1 location2
     Take (EPerson (Ident personName)) (EItem (Ident itemName)) -> do

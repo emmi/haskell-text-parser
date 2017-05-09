@@ -41,7 +41,7 @@ isPersonIn :: [Person] -> String -> String -> String
 isPersonIn people name location =
   case findPerson people name of
    Just person -> if locationIsUncertain person
-                 then isLocationPossible (locations person) location
+                 then isLocationPossible (reverse (locations person)) location
                  else checkLocation (last (locations person)) location
    Nothing -> "Maybe"
 

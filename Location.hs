@@ -24,6 +24,9 @@ checkLocation lastLocation location
 
 isLocationPossible :: [Location] -> String -> String
 isLocationPossible (firstLocation:secondLocation:others) location
+  | locationName firstLocation == "" = if (location == locationName secondLocation)
+                                        then "No"
+                                        else "Maybe"
   | locationName firstLocation == location || locationName secondLocation == location = "Maybe"
   | otherwise = "No"
 
