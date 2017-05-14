@@ -17,32 +17,35 @@ data Direction = Direction {
 
 hasEntry location (from, direction, to) = from == location || to == location
 
+isSame :: Location -> String -> Bool
+isSame location target = locationName location == target
+
 checkLocation :: Location -> String -> String
 checkLocation lastLocation location
-  | locationName lastLocation == location = "Yes"
+  | isSame lastLocation location = "Yes"
   | otherwise = "No"
 
 isLocationPossible :: [Location] -> String -> String
-isLocationPossible (firstLocation:secondLocation:others) location
-  | locationName firstLocation == "" = if (location == locationName secondLocation)
+isLocationPossible (first:second:others) location
+  | isSame first "" = if (isSame second location)
                                         then "No"
                                         else "Maybe"
-  | locationName firstLocation == location || locationName secondLocation == location = "Maybe"
+  | isSame first location || isSame second location = "Maybe"
   | otherwise = "No"
 
 getLocationBefore :: [Location] -> String -> String
 getLocationBefore [] _ = "Don't know."
 getLocationBefore [x] _ = "Don't know."
-getLocationBefore (firstLocation:others) location
-  | locationName firstLocation == location = "Don't know."
-  | locationName (head others) == location = locationName firstLocation
+getLocationBefore (first:others) location
+  | isSame first location = "Don't know."
+  | isSame (head others) location = locationName first
   | otherwise = getLocationBefore others location
 
 getLocationAfter :: [Location] -> String -> String
 getLocationAfter [] _ = "Don't know."
 getLocationAfter [x] _ = "Don't know."
-getLocationAfter (firstLocation:others) location
-  | locationName firstLocation == location = locationName (head others)
+getLocationAfter (first:others) location
+  | isSame first location = locationName (head others)
   | otherwise = getLocationAfter others location
 
 getDirections :: [Direction] -> String -> String -> String
