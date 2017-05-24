@@ -13,6 +13,7 @@ import Location
 
 import ErrM
 
+-- State data type
 data State = State {
   people :: [Person],
   items :: [Item],
